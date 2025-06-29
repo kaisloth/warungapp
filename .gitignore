@@ -8,7 +8,16 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+
+public
+src
+.env
+.htaccess
+eslint.config.js
+package-locak.json
+package.json
+vite.config.js
+
 dist-ssr
 *.local
 
