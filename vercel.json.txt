@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "//:path*",
+      "source": "/api/:path*",
       "destination": "https://warungapp.ct.ws/public/index.php/:path*"
     }
   ]
