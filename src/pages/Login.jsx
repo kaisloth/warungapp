@@ -54,6 +54,7 @@ function Login() {
           if(data.status == 200) {
             Cookies.set('username', data.cookiesdata.username, { expires: 30, path: '/' });
             Cookies.set('sessionkey', data.cookiesdata.sessionkey, { expires: 30, path: '/' });
+            Cookies.set('islogin', data.cookiesdata.sessionkey, { expires: 30, path: '/' });
             window.location.href = '/';
             return
           }
