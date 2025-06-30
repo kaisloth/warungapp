@@ -18,7 +18,7 @@ function App() {
   const [USERNAME, setUsername] = useState(Cookies.get('username'));
   
   useEffect(() => {
-    const apiUrl = `${import.meta.env.VITE_API_URL}/api/user/sessionvalidation`;
+    const apiUrl = `${import.meta.env.VITE_API_URL}/user/sessionvalidation`;
 
     const formData = new FormData();
     formData.append('sessionkey', SESSION_KEY);
