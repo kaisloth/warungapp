@@ -11,9 +11,9 @@ import Orders from './pages/Orders.jsx';
 
 function App() {
 
-  const [isLogin, setIsLogin] = useState(false);
-  const [nameUser, setNameUser] = useState('anon');
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLogin, setIsLogin] = useState(null);
+  const [nameUser, setNameUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(null);
   const [SESSION_KEY, setSESSION_KEY] = useState(Cookies.get('sessionkey'));
   const [USERNAME, setUsername] = useState(Cookies.get('username'));
   

@@ -24,7 +24,7 @@ function Home() {
       let headerOffsetHeight = header.current.offsetHeight;
       contentContainer.current.style.height = `calc(100vh - ${headerOffsetHeight}px)`;
       contentContainer.current.style.paddingBottom = headerOffsetHeight+'px';
-    })
+    }, [])
 
   return (
     <>   

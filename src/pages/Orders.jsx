@@ -17,11 +17,8 @@ const Orders = () => {
     const header = useRef(null);
     const contentContainer = useRef(null);
 
-    useEffect(() => {
-      let headerOffsetHeight = header.current.offsetHeight;
-      contentContainer.current.style.height = `calc(100vh - ${headerOffsetHeight}px)`;
-      contentContainer.current.style.paddingBottom = headerOffsetHeight+'px';
-    })
+    const { isLogin, setIsLogin } = useContext(Context);
+    const { isAdmin, setIsAdmin } = useContext(Context);
 
     let ordersData = [
       {
@@ -40,53 +37,83 @@ const Orders = () => {
       }
     ]
 
-    const { isLogin, setIsLogin } = useContext(Context);
-    const { isAdmin, setIsAdmin } = useContext(Context);
-
-    if(!isLogin) {
-        return window.location.href = '/';
-    };
+    if(isLogin) {
+        // For Users
+        if(!isAdmin) {
+          return (
+              <>
     
-    // For Users
-    if(!isAdmin) {
+                <Header ref={header} />
+    
+                <div className='flex'>
+    
+                    <SideBar formAddProductOverlay={formAddProductOverlay} />
+                    <div ref={contentContainer} className='h-screen overflow-hidden w-full'>
+    
+                      <div className='flex flex-col h-full overflow-scroll pb-8'>
+                        <div className='p-4 flex-2 relative'>
+                            <h1 className='text-xl font-bold mb-4'>Pesanan:</h1>
+                            <UserOrderCards statusOrder='ordered' orders={ordersData} />
+                        </div>
+                        <div className='p-4 flex-2 relative'>
+                            <h1 className='text-xl font-bold mb-4'>Sedang Dikerjakan:</h1>
+                            <UserOrderCards statusOrder='onprocess' orders={ordersData} />
+                        </div>
+                        <div className='p-4 flex-2 relative'>
+                            <h1 className='text-xl font-bold mb-4'>Pesanan Selesai:</h1>
+                            <UserOrderCards statusOrder='done' orders={ordersData} />
+                        </div>
+                      </div>
+    
+                    </div>
+    
+                </div>
+    
+                <Footer />
+              </>
+            )
+        }
+    
       return (
-          <>
-
+        <>   
+            
+            <AddProductOverlay ref={formAddProductOverlay} />
+    
             <Header ref={header} />
-
+    
             <div className='flex'>
-
+    
                 <SideBar formAddProductOverlay={formAddProductOverlay} />
                 <div ref={contentContainer} className='h-screen overflow-hidden w-full'>
-
-                  <div className='flex flex-col h-full overflow-scroll pb-8'>
-                    <div className='p-4 flex-2 relative'>
-                        <h1 className='text-xl font-bold mb-4'>Pesanan:</h1>
-                        <UserOrderCards statusOrder='ordered' orders={ordersData} />
+    
+                    <div className='flex flex-col h-full overflow-scroll pb-8'>
+                      <div className='p-4 flex-2 relative'>
+                          <h1 className='text-xl font-bold mb-4'>Pesanan:</h1>
+                          <OrderCards statusOrder='ordered' orders={ordersData} />
+                      </div>
+                      <div className='p-4 flex-2 relative'>
+                          <h1 className='text-xl font-bold mb-4'>Sedang Dikerjakan:</h1>
+                          <OrderCards statusOrder='onprocess' orders={ordersData} />
+                      </div>
+                      <div className='p-4 flex-2 relative'>
+                          <h1 className='text-xl font-bold mb-4'>Pesanan Selesai:</h1>
+                          <OrderCards statusOrder='done' orders={ordersData} />
+                      </div>
                     </div>
-                    <div className='p-4 flex-2 relative'>
-                        <h1 className='text-xl font-bold mb-4'>Sedang Dikerjakan:</h1>
-                        <UserOrderCards statusOrder='onprocess' orders={ordersData} />
-                    </div>
-                    <div className='p-4 flex-2 relative'>
-                        <h1 className='text-xl font-bold mb-4'>Pesanan Selesai:</h1>
-                        <UserOrderCards statusOrder='done' orders={ordersData} />
-                    </div>
+    
                   </div>
-
-                </div>
-
+    
             </div>
-
+    
             <Footer />
-          </>
-        )
-    }
-
-  return (
-    <>   
+    
+        </>
         
-        <AddProductOverlay ref={formAddProductOverlay} />
+      )
+    };
+
+    return (
+      <>
 
         <Header ref={header} />
 
@@ -95,29 +122,20 @@ const Orders = () => {
             <SideBar formAddProductOverlay={formAddProductOverlay} />
             <div ref={contentContainer} className='h-screen overflow-hidden w-full'>
 
-                <div className='flex flex-col h-full overflow-scroll pb-8'>
-                  <div className='p-4 flex-2 relative'>
-                      <h1 className='text-xl font-bold mb-4'>Pesanan:</h1>
-                      <OrderCards statusOrder='ordered' orders={ordersData} />
-                  </div>
-                  <div className='p-4 flex-2 relative'>
-                      <h1 className='text-xl font-bold mb-4'>Sedang Dikerjakan:</h1>
-                      <OrderCards statusOrder='onprocess' orders={ordersData} />
-                  </div>
-                  <div className='p-4 flex-2 relative'>
-                      <h1 className='text-xl font-bold mb-4'>Pesanan Selesai:</h1>
-                      <OrderCards statusOrder='done' orders={ordersData} />
-                  </div>
+              <div className='flex flex-col h-full overflow-scroll pb-8'>
+                <div className='p-4 flex-2 relative'>
+                    <h1 className='text-xl font-bold mb-4'>Pesanan:</h1>
+                    <p>Tunggu Sebentar...</p>
                 </div>
-
               </div>
+
+            </div>
 
         </div>
 
         <Footer />
-
-    </>
-  )
+      </>
+    )
 }
 
 export default Orders;

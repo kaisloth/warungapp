@@ -27,7 +27,7 @@ let AddProductOverlay = forwardRef((props, formAddProductOverlay) => {
             }
           });
 
-        })
+      }, [])
         
         let addProductSubmit = () => {
             if(labelImageInput.current.innerHTML == 'Pilih Gambar' && inputHarga.current.value != '' && inputNama.current.value != '') {

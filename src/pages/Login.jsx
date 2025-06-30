@@ -24,16 +24,32 @@ function Login() {
 
   useEffect(() => {
 
-    let showAlertForm = () => {
-      alertLoginForm.current.classList.replace('hidden', 'block');
-      setTimeout(() => {
-        alertLoginForm.current.classList.replace('block', 'hidden');
-      }, 3000);
+    let showAlertForm = (status) => {
+      if(status == 'submit') {
+        alertLoginForm.current.classList.add('bg-gray-300');
+        alertLoginForm.current.innerHTML = 'Tunggu sebentar...';
+        alertLoginForm.current.classList.replace('hidden', 'block');
+        
+      } else if(status == 'validationerror') {
+        alertLoginForm.current.innerHTML = 'Login gagal, pastikan email dan password benar!';
+        alertLoginForm.current.classList.replace('bg-gray-300', 'bg-red-300');
+        alertLoginForm.current.classList.replace('hidden', 'block');
+        setTimeout(() => {
+          alertLoginForm.current.innerHTML = 'Tunggu sebentar...!';
+          alertLoginForm.current.classList.replace('block', 'hidden');
+          alertLoginForm.current.classList.replace('bg-red-300', 'bg-gray-300');
+        }, 3000);
+      } else {
+        alertLoginForm.current.innerHTML = 'Login berhasil!';
+        alertLoginForm.current.classList.replace('bg-gray-300', 'bg-green-300');
+        alertLoginForm.current.classList.replace('hidden', 'block');
+      }
     }
 
     const formData = new FormData();
     
-      const fetchLogin = async e => {
+    const fetchLogin = async e => {
+        showAlertForm('submit');
         e.preventDefault();
 
         formData.append('email', inputEmail.current.value);
@@ -45,30 +61,33 @@ function Login() {
             body: formData
           });
           if(!res.ok) {
-            showAlertForm();
+            showAlertForm('validationerror');
             console.log('res not ok');
             return
           }
           const data = await res.json();
           console.log(data);
           if(data.status == 200) {
+            showAlertForm('success');
             Cookies.set('username', data.cookiesdata.username, { expires: 30, path: '/' });
             Cookies.set('sessionkey', data.cookiesdata.sessionkey, { expires: 30, path: '/' });
-            Cookies.set('islogin', data.cookiesdata.sessionkey, { expires: 30, path: '/' });
+            Cookies.set('islogin', true, { expires: 30, path: '/' });
             window.location.href = '/';
             return
           }
+          showAlertForm('validationerror');
+          return
 
         } catch (error) {
           console.log('Fetch error: '+error);
-          showAlertForm();
+          showAlertForm('validationerror');
           return
         }
       }
 
       btnLogin.current.addEventListener('click', fetchLogin);
 
-  }, [])
+  }, [alertLoginForm])
 
 
 
@@ -79,7 +98,7 @@ function Login() {
       <div class="flex-grow flex justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
           <div class="max-w-md w-full space-y-8 border border-gray-200 rounded-lg shadow-lg p-10 bg-white">
               <h2 class="mt-2 text-center text-3xl font-extrabold text-slate-900 select-none">Masuk WarungApp</h2>
-              <p ref={alertLoginForm} className='bg-red-300 text-white py-1 px-2 text-center justify-center rounded-sm hidden'>Validation Error!</p>
+              <p ref={alertLoginForm} className='text-white py-1 px-2 text-center justify-center rounded-sm hidden'>Validation Error!</p>
               
               <form ref={formLogin} class="mt-8 space-y-6" action={`${import.meta.env.VITE_API_URL}/user/login`} method="POST" autocomplete="off" id="login-form">
                   <div class="rounded-md -space-y-px">

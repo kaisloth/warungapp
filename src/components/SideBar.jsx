@@ -11,19 +11,22 @@ function SideBar(props) {
     const { isAdmin, setIsAdmin } = useContext(Context);
     const { isLogin, setIsLogin } = useContext(Context);
 
-    if(!isLogin) {
+    if(isLogin) {
+        if(isAdmin) {
+            return (
+                <AdminLayout username={nameUser} formAddProductOverlay={props.formAddProductOverlay} /> 
+            )
+        }
+        return (
+            <UserLayout username={nameUser} />
+        )
+    }
+    if(nameUser == 'anon') {
         return(
             <GuestLayout />
         )
     }
-    if(isAdmin) {
-        return (
-            <AdminLayout username={nameUser} formAddProductOverlay={props.formAddProductOverlay} /> 
-        )
-    }
-    return (
-        <UserLayout username={nameUser} />
-    )
+    return;
 }
 
 export default SideBar
