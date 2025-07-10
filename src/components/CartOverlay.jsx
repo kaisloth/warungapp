@@ -82,46 +82,20 @@ const CartOverlay = forwardRef((props, cartOverlay) => {
             return response.json();
         })
         .then(data => {
-            console.log(data)
-            cartItems.map((item) => {
-                removeFromCart(item.id_product);
-            })
-            cartOverlay.current.classList.replace('flex', 'hidden');
-            notifOverlay.classList.replace('hidden', 'flex');
+            if(data.status == 200) {
+                cartItems.map((item) => {
+                    removeFromCart(item.id_product);
+                })
+                cartOverlay.current.classList.replace('flex', 'hidden');
+                notifOverlay.classList.replace('hidden', 'flex');
+                return
+            }
+            console.log(data.message);
         })
         .catch(error => {
             console.error('Error:', error);
         });
     }
-
-
-    // let createOrder = () => {
-
-    //     let params = new URLSearchParams();
-    //     params.append('id_order', idOrder);
-    //     params.append('name_user', name_user);
-    //     params.append('total_price', total_price);
-
-    //     fetch(apiUrl + '/order/create', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/x-www-form-urlencoded'
-    //         },
-    //         body: params
-    //     })
-    //     .then(response => {
-    //         if (!response.ok) {
-    //             throw new Error(`HTTP error! Status: ${response.status}`);
-    //         }
-    //         return response.json();
-    //     })
-    //     .then(data => {
-    //         console.log(data)
-    //     })
-    //     .catch(error => {
-    //         console.error('Error:', error);
-    //     });
-    // }
 
   return (
     <>

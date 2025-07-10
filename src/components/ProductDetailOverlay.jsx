@@ -1,4 +1,5 @@
-import React, {useEffect, useRef, forwardRef} from 'react'
+import React, {useEffect, useRef, forwardRef, useContext} from 'react'
+import Context from '../Context';
 
 const ProductDetailOverlay = forwardRef((props, formEditProductOverlay) => {
 
@@ -11,6 +12,51 @@ const ProductDetailOverlay = forwardRef((props, formEditProductOverlay) => {
     const inputHarga = useRef(null);
     const inputStock = useRef(null);
     const formEditProduct = useRef(null);
+    const btnDeleteProduct = useRef(null);
+    const btnUpdateProduct = useRef(null);
+
+    const {apiUrl} = useContext(Context);
+
+
+    let editProductSubmit = () => {
+        if(labelImageProductInput.current.innerHTML == 'Pilih Gambar' && inputHarga.current.value != '' && inputNama.current.value != '') {
+            alertForm.current.classList.replace('hidden', 'flex');
+            textAlertForm.current.innerHTML = 'Pilih gambar terlebih dahulu!'
+            
+            setTimeout(() => {
+                alertForm.current.classList.replace('flex', 'hidden');
+            }, 3000);
+        }
+    }
+
+    let fetchDeleteProduct = async () => {
+        const res = await fetch(apiUrl+'/product/delete/'+props.product.idProduct)
+        if (!res.ok) console.log('res not ok');
+        const data = await res.json();
+        if(data.status == 200) {
+            formEditProductOverlay.current.classList.replace('flex', 'hidden');
+            formEditProduct.current.reset();
+            props.getProducts();
+            return
+        }
+        console.log(data.message);
+    }
+
+    let fetchUpdateProduct = async () => {
+        const res = await fetch(apiUrl+'/product/update', {
+            method: 'POST',
+            body: new FormData(formEditProduct.current)
+        });
+        if(!res.ok) console.log('res not ok');
+        const data = await res.json();
+        if(data.status == 200) {
+            formEditProductOverlay.current.classList.replace('flex', 'hidden');
+            formEditProduct.current.reset();
+            props.getProducts();
+            return
+        };
+        console.log(data.message);
+    }
  
     useEffect(()=> {
         imageProductInput.current.addEventListener('change', function(event) {
@@ -50,17 +96,6 @@ const ProductDetailOverlay = forwardRef((props, formEditProductOverlay) => {
             inputHarga.current.addEventListener('change', () => validateNumericInput(inputHarga.current));
             inputStock.current.addEventListener('change', () => validateNumericInput(inputStock.current));
         }, [])
-
-        let editProductSubmit = () => {
-            if(labelImageProductInput.current.innerHTML == 'Pilih Gambar' && inputHarga.current.value != '' && inputNama.current.value != '') {
-                alertForm.current.classList.replace('hidden', 'flex');
-                textAlertForm.current.innerHTML = 'Pilih gambar terlebih dahulu!'
-                
-                setTimeout(() => {
-                    alertForm.current.classList.replace('flex', 'hidden');
-                }, 3000);
-            }
-        }
         
 
   return (
@@ -93,8 +128,8 @@ const ProductDetailOverlay = forwardRef((props, formEditProductOverlay) => {
                          <img ref={previewImageProduct} src={props.product.imageProduct} alt="Thumbnail Preview" width="160" height="120" loading="lazy" className="aspect-video mt-1 self-center" /> 
                     </div>
                     <div className='flex gap-2'>
-                        <button onClick={editProductSubmit} className='w-full rounded-sm py-1 mt-6 cursor-pointer bg-blue-500 text-white hover:bg-blue-700' type='submit'>Ubah</button>
-                        <a href={`${import.meta.env.VITE_API_URL}/product/delete/${props.product.idProduct}`} className='w-full rounded-sm py-1 mt-6 cursor-pointer bg-red-500 text-white hover:bg-red-700 text-center'>Hapus</a>
+                        <button onClick={()=>{editProductSubmit(); fetchUpdateProduct();}} className='w-full rounded-sm py-1 mt-6 cursor-pointer bg-blue-500 text-white hover:bg-blue-700' type='button'>Ubah</button>
+                        <button type='button' onClick={()=>{fetchDeleteProduct()}} className='w-full rounded-sm py-1 mt-6 cursor-pointer bg-red-500 text-white hover:bg-red-700 text-center'>Hapus</button>
 
                     </div>
                 </form>

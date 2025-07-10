@@ -1,4 +1,5 @@
-import React, {useEffect, useRef, forwardRef, use} from 'react'
+import React, {useEffect, useRef, forwardRef, useContext} from 'react'
+import Context from '../Context';
 
 let AddProductOverlay = forwardRef((props, formAddProductOverlay) => {
 
@@ -10,6 +11,38 @@ let AddProductOverlay = forwardRef((props, formAddProductOverlay) => {
     const inputNama = useRef(null);
     const inputHarga = useRef(null);
     const formAddProduct = useRef(null);
+    const btnAddProduct = useRef(null);
+
+    const {apiUrl} = useContext(Context);
+
+    let addProductSubmit = () => {
+        if(labelImageInput.current.innerHTML == 'Pilih Gambar' && inputHarga.current.value != '' && inputNama.current.value != '') {
+            alertForm.current.classList.replace('hidden', 'flex');
+            textAlertForm.current.innerHTML = 'Pilih gambar terlebih dahulu!'
+
+            setTimeout(() => {
+                alertForm.current.classList.replace('flex', 'hidden');
+            }, 3000);
+        }
+    }
+
+    let fetchAddProduct = async () => {
+        
+        const res = await fetch(apiUrl+'/product/add', {
+            method: 'POST',
+            body: new FormData(formAddProduct.current)
+        });
+        if (!res.ok) console.log('res not ok');
+        const data = await res.json();
+        if(data.status == 200) {
+            console.log('add product success!')
+            formAddProductOverlay.current.classList.replace('flex', 'hidden');
+            formAddProduct.current.reset();
+            props.getProducts();
+            return
+        }
+        console.log(data.message);
+    }
 
     useEffect(()=> {
         imageInput.current.addEventListener('change', function(event) {
@@ -29,16 +62,6 @@ let AddProductOverlay = forwardRef((props, formAddProductOverlay) => {
 
       }, [])
         
-        let addProductSubmit = () => {
-            if(labelImageInput.current.innerHTML == 'Pilih Gambar' && inputHarga.current.value != '' && inputNama.current.value != '') {
-                alertForm.current.classList.replace('hidden', 'flex');
-                textAlertForm.current.innerHTML = 'Pilih gambar terlebih dahulu!'
-
-                setTimeout(() => {
-                    alertForm.current.classList.replace('flex', 'hidden');
-                }, 3000);
-            }
-        }
 
 
   return (
@@ -54,7 +77,7 @@ let AddProductOverlay = forwardRef((props, formAddProductOverlay) => {
                 <div ref={alertForm} className='justify-center bg-red-300 text-white py-1 px-2 rounded-sm hidden'>
                     <p ref={textAlertForm}>Alert!</p>
                 </div>
-                <form ref={formAddProduct} action={`${import.meta.env.VITE_API_URL}/product/add`} method='post' encType='multipart/form-data' className='flex flex-col gap-2 mt-2'>
+                <form ref={formAddProduct} encType='multipart/form-data' className='flex flex-col gap-2 mt-2'>
                     <input ref={inputNama} name='name' className='border border-gray-200 rounded-sm p-1' type="text" placeholder='Nama Produk' required />
                     <input ref={inputHarga} name='price' className='border border-gray-200 rounded-sm p-1' type="text" placeholder='Harga Produk' required />
                     <div className='flex flex-col gap-2'>
@@ -66,9 +89,9 @@ let AddProductOverlay = forwardRef((props, formAddProductOverlay) => {
                             <span ref={labelImageInput}>Pilih Gambar</span>
                         </label>
                          <input ref={imageInput} id='input-gambar' name="image" type="file" accept=".jpg, .jpeg, .png, .webp" className="hidden" required />
-                         <img ref={previewImage} src="" alt="Thumbnail Preview" width="160" height="120" loading="lazy" className="hidden aspect-video mt-1 self-center" />
+                         <img ref={previewImage}  alt="Thumbnail Preview" width="160" height="120" loading="lazy" className="hidden aspect-video mt-1 self-center" />
                     </div>
-                    <button onClick={addProductSubmit} className='border border-gray-800 rounded-sm py-1 mt-6 cursor-pointer bg-gray-700 text-white hover:bg-gray-600' type='submit'>Tambah</button>
+                    <button ref={btnAddProduct} onClick={()=>{addProductSubmit();fetchAddProduct();}} type='button' className='border border-gray-800 rounded-sm py-1 mt-6 cursor-pointer bg-gray-700 text-white hover:bg-gray-600'>Tambah</button>
                 </form>
             </div>  
         </div>

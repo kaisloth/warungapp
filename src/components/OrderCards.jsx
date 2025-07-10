@@ -12,9 +12,6 @@ function OrderCards(props) {
             maximumFractionDigits: 0,
           }).format(amount);
     }
-    
-    const [fetchOrderStatus, setFetchOrderStatus] = useState(0);
-    const [fetchOrderData, setFetchOrderData] = useState(null);
 
     const [nameUser, setNameUser] = useState('');
     const [orderDate, setOrderDate] = useState('');
@@ -25,51 +22,11 @@ function OrderCards(props) {
     const orderDetailOverlay = useRef(null);
 
     useEffect(() => {
-        fetch(import.meta.env.VITE_API_URL+'/order/get')
-            .then(res => res.json())
-            .then(data => {
-                if(!data.status == 200) {
-                    setFetchOrderStatus(data.status);
-                    return
-                }
-                setFetchOrderStatus(data.status);
-                setFetchOrderData(data.orders);
-                return
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }, [])
-    
-    if (fetchOrderStatus === 200 && (!fetchOrderData || fetchOrderData.length === 0)) {
-        return (
-            <div>
-                <p>Tidak ada pesanan.</p>
-            </div>
-        );
-    }
+    }, [orderDetailOverlay])
 
-    // You might also want to show a loading state while fetching data
-    if (fetchOrderStatus === 0 && fetchOrderData === null) {
-        return (
-            <div>
-                <p>Memuat pesanan...</p>
-            </div>
-        );
-    }
-
-    // If fetchOrderStatus is not 200 (e.g., an error occurred), you could display an error message
-    if (fetchOrderStatus !== 200) {
-        return (
-            <div>
-                <p>{fetchOrderMessage || "Tidak ada pesanan."}</p>
-            </div>
-        );
-    }
-
-    const orderedOrders = fetchOrderData.filter(item => item.status_order === 'ordered');
-    const onprocessOrders = fetchOrderData.filter(item => item.status_order === 'onprocess');
-    const doneOrders = fetchOrderData.filter(item => item.status_order === 'done');
+    const orderedOrders = props.orders.datas.filter(item => item.status_order === 'ordered');
+    const onprocessOrders = props.orders.datas.filter(item => item.status_order === 'onprocess');
+    const doneOrders = props.orders.datas.filter(item => item.status_order === 'done');
 
     if(props.statusOrder == 'ordered') {
 
@@ -84,6 +41,7 @@ function OrderCards(props) {
         
         return (
           <>
+          <OrderDetailOverlay getOrders={props.getOrders} changeStatus={'toprocess'} nameUser={nameUser} orderDate={orderDate} orderedProducts={orderedProducts} ref={orderDetailOverlay} />
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full items-start gap-4'>
 
               {
@@ -131,8 +89,6 @@ function OrderCards(props) {
                                   </div>
                               </div>
                           </button>
-
-                          <OrderDetailOverlay changeStatus={'toprocess'} nameUser={nameUser} orderDate={orderDate} orderedProducts={orderedProducts} ref={orderDetailOverlay} />
                         </>
                       )
                   })
@@ -156,6 +112,7 @@ function OrderCards(props) {
 
         return (
             <>
+            <OrderDetailOverlay getOrders={props.getOrders} changeStatus={'todone'} nameUser={nameUser} orderDate={orderDate} orderedProducts={orderedProducts} ref={orderDetailOverlay} />
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full items-start gap-4'>
                 {
                     onprocessOrders.map((order) => {
@@ -200,7 +157,6 @@ function OrderCards(props) {
                                     </div>
                                 </div>
                             </button>
-                            <OrderDetailOverlay changeStatus={'todone'} nameUser={nameUser} orderDate={orderDate} orderedProducts={orderedProducts} ref={orderDetailOverlay} />
                             </>
                         )
                     })

@@ -14,23 +14,56 @@ const OrderDetailOverlay = forwardRef((props, orderDetailOverlay) => {
 
     const { isLogin, setIsLogin } = useContext(Context);
     const { isAdmin, setIsAdmin } = useContext(Context);
+    const apiUrl = useContext(Context).apiUrl;
 
     const [nameProduct, setNameProduct] = useState([[]]);
     const [priceProduct, setPriceProduct] = useState([[]]);
     const [quantityProduct, setQuantityProduct] = useState([[]]);
 
-    useEffect(() => {
+    const [isLoading, setIsLoading] = useState(false);
+    const btnToProcess = useRef(null);
+    const btnToDone = useRef(null);
+    const btnReject = useRef(null);
 
-        if(props.orderedProducts[0] == "") {
-            return;
+    let toProcess = () => {
+        setIsLoading(true);
+        fetch(apiUrl+'/order/process/'+props.orderedProducts.id_order)
+        .then(res => {res.ok ? res.json() : console.log('res not ok');})
+        .then(data => {setIsLoading(false);props.getOrders()})
+    };
+    let toDone = () => {
+        setIsLoading(true);
+        fetch(apiUrl+'/order/done/'+props.orderedProducts.id_order)
+        .then(res => {res.ok ? res.json() : console.log('res not ok');})
+        .then(data => {setIsLoading(false);props.getOrders()})
+    };
+    let reject = () => {
+        setIsLoading(true);
+        fetch(apiUrl+'/order/delete/'+props.orderedProducts.id_order)
+        .then(res => {res.ok ? res.json() : console.log('res not ok');})
+        .then(data => {setIsLoading(false);props.getOrders()})
+    };
+    
+    useEffect(() => {
+        if(props.orderedProducts[0] != "") {
+            setNameProduct(props.orderedProducts.name_product.split(','));
+            setPriceProduct(props.orderedProducts.price_product.split(','));
+            setQuantityProduct(props.orderedProducts.quantity_product.split(','));
         }
-        setNameProduct(props.orderedProducts.name_product.split(','));
-        setPriceProduct(props.orderedProducts.price_product.split(','));
-        setQuantityProduct(props.orderedProducts.quantity_product.split(','));
+
+        console.log(orderDetailOverlay.current)
 
     }, [props.orderedProducts])
 
     if(props.changeStatus == 'toprocess') {
+
+        if(isLoading) {
+            return (
+                <>
+                    <div>Tunggu Sebentar...</div>
+                </>
+            )
+        }
 
         return (
             <div ref={orderDetailOverlay} className='fixed top-0 left-0 h-screen w-screen bg-[rgba(0,0,0,.5)] hidden flex-col items-center pt-32 z-50'>
@@ -75,12 +108,8 @@ const OrderDetailOverlay = forwardRef((props, orderDetailOverlay) => {
 
                     <div className='mt-6 flex gap-2'>
 
-                        <form className='w-full' method='get' action={import.meta.env.VITE_API_URL+'/order/process/'+props.orderedProducts.id_order}>
-                            <button type='submit' className='border rounded-sm py-1 w-full cursor-pointer bg-green-500 hover:bg-green-700 text-white'>Terima</button>
-                        </form>
-                        <form className='w-full' method='get' action={import.meta.env.VITE_API_URL+'/order/delete/'+props.orderedProducts.id_order}>
-                            <button type='submit' className='border rounded-sm py-1 w-full cursor-pointer bg-red-500 hover:bg-red-700 text-white'>Tolak</button>
-                        </form>
+                        <button ref={btnToProcess} type='button' onClick={toProcess} className='border rounded-sm py-1 w-full cursor-pointer bg-green-500 hover:bg-green-700 text-white'>Terima</button>
+                        <button ref={btnReject}  type='button' onClick={reject} className='border rounded-sm py-1 w-full cursor-pointer bg-red-500 hover:bg-red-700 text-white'>Tolak</button>
 
                     </div>
 
@@ -89,6 +118,14 @@ const OrderDetailOverlay = forwardRef((props, orderDetailOverlay) => {
         )
     } else if (props.changeStatus == 'todone') {
 
+        if(isLoading) {
+            return (
+                <>
+                    <div>Tunggu Sebentar...</div>
+                </>
+            )
+        }
+
         return (
             <div ref={orderDetailOverlay} className='fixed top-0 left-0 h-screen w-screen bg-[rgba(0,0,0,.5)] hidden flex-col items-center pt-32 z-50'>
                 <div className='bg-white border border-gray-200 w-80 h-fit px-8 pb-8 pt-4 rounded-lg flex flex-col'>
@@ -132,12 +169,8 @@ const OrderDetailOverlay = forwardRef((props, orderDetailOverlay) => {
 
                     <div className='mt-6 flex gap-2'>
 
-                        <form className='w-full' method='get' action={import.meta.env.VITE_API_URL+'/order/done/'+props.orderedProducts.id_order}>
-                            <button type='submit' className='border rounded-sm py-1 w-full cursor-pointer bg-green-500 hover:bg-green-700 text-white'>Selesaikan</button>
-                        </form>
-                        <form className='w-full' method='get' action={import.meta.env.VITE_API_URL+'/order/delete/'+props.orderedProducts.id_order}>
-                            <button type='submit' className='border rounded-sm py-1 w-full cursor-pointer bg-red-500 hover:bg-red-700 text-white'>Hapus</button>
-                        </form>
+                        <button ref={btnToDone} type='button' onClick={toDone} className='border rounded-sm py-1 w-full cursor-pointer bg-green-500 hover:bg-green-700 text-white'>Selesaikan</button>
+                        <button ref={btnReject} type='button' onClick={reject} className='border rounded-sm py-1 w-full cursor-pointer bg-red-500 hover:bg-red-700 text-white'>Hapus</button>
 
                     </div>
 

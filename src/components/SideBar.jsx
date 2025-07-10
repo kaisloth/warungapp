@@ -15,10 +15,10 @@ function SideBar(props) {
         if(isAdmin) {
             return (
                 <AdminLayout username={nameUser} formAddProductOverlay={props.formAddProductOverlay} /> 
-            )
+            ) 
         }
         return (
-            <UserLayout username={nameUser} />
+            <UserLayout getUserOrders={props.getUserOrders} username={nameUser} />
         )
     }
     if(nameUser == 'anon') {
