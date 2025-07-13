@@ -86,6 +86,7 @@ const CartOverlay = forwardRef((props, cartOverlay) => {
                 cartItems.map((item) => {
                     removeFromCart(item.id_product);
                 })
+                props.getUserOrders();
                 cartOverlay.current.classList.replace('flex', 'hidden');
                 notifOverlay.classList.replace('hidden', 'flex');
                 return

@@ -1,6 +1,7 @@
-import React, { useRef } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import CartOverlay from '../CartOverlay';
 import NotifOverlays from '../NotifOverlays';
+import Context from '../../Context';
 
 function GuestLayout(props) {
     const svg = {
@@ -18,13 +19,20 @@ function GuestLayout(props) {
                 </svg>,
         }
 
+        const { openSideBar } = useContext(Context);
+        const aside = useRef(null);
+
+        useEffect(() => {
+            openSideBar ? aside.current.classList.replace('hidden', 'block') : aside.current.classList.replace('block', 'hidden')
+        }, [openSideBar]);
+
   return (
     <>
-        <aside className='border border-gray-200 shadow-xl h-full w-64'>
+        <aside ref={aside} className='border border-gray-200 hidden shadow-xl h-full w-64'>
                 <nav className='flex flex-col h-full'>
-                    <a href="/" className={`flex gap-2 px-4 py-2 hover:bg-gray-200 ${location.pathname === '/' ? 'bg-gray-200' : ''}`}>
+                    <a href="/" className={`flex gap-2 px-4 py-2 bg-gray-200`}>
                         {svg.product}
-                        Produk 
+                        Produk
                     </a>
                 </nav>
 

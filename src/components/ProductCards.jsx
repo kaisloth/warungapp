@@ -35,7 +35,7 @@ function ProductCards(props) {
                               <img className='w-full aspect-video' src={product.image_product} alt="" />
                               <h2 className='text-lg font-bold mb-1'>{product.name_product}</h2>
                               <p>Harga: Rp. {product.price_product}</p>
-                              <p className='text-xs text-left'>Stocks: {product.stock_product} Kg</p>
+                              <p className='text-xs text-left'>Stocks: {product.stock_product}</p>
                           </div>
                         </div>
                       )
@@ -59,7 +59,7 @@ function ProductCards(props) {
                                 <img className='w-full aspect-video' src={product.image_product} alt="" />
                                 <h2 className='text-lg font-bold mb-1'>{product.name_product}</h2>
                                 <p>Harga: Rp. {product.price_product}</p>
-                                <p className='text-xs text-left'>Stocks: {product.stock_product} Kg</p>
+                                <p className='text-xs text-left'>Stocks: {product.stock_product}</p>
                             </div>
                           </button>
                         )

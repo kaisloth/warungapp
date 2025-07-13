@@ -119,7 +119,7 @@ function Home() {
             <div className='flex'>
     
                 <SideBar formAddProductOverlay={formAddProductOverlay} />
-                <div ref={contentContainer} className='h-screen overflow-hidden w-full'>
+                <div ref={contentContainer} className='h-screen overflow-hidden w-full p-4'>
     
                   <div className='flex flex-col h-full overflow-scroll'>
                     <div className='p-4 flex-2 relative'>
@@ -156,7 +156,7 @@ function Home() {
                     <div className='flex'>
         
                         <SideBar getUserOrders={getUserOrders} />
-                        <div ref={contentContainer} className='h-screen overflow-hidden w-full'>
+                        <div ref={contentContainer} className='h-screen overflow-hidden w-full p-4'>
         
                           <div className='flex flex-col h-full overflow-scroll pb-8'>
                             <div className='p-4 flex-2 relative'>
@@ -197,7 +197,7 @@ function Home() {
                   <div className='flex'>
           
                       <SideBar formAddProductOverlay={formAddProductOverlay} />
-                      <div ref={contentContainer} className='h-screen overflow-hidden w-full'>
+                      <div ref={contentContainer} className='h-screen overflow-hidden w-full p-4'>
           
                           <div className='flex flex-col h-full overflow-scroll pb-8'>
                             <div className='p-4 flex-2 relative'>
@@ -239,7 +239,7 @@ function Home() {
           <div className='flex'>
 
               <SideBar />
-              <div ref={contentContainer} className='h-screen overflow-hidden w-full'>
+              <div ref={contentContainer} className='h-screen overflow-hidden w-full p-4'>
 
                 <div className='flex flex-col h-full overflow-scroll pb-8'>
                   <div className='p-4 flex-2 relative'>

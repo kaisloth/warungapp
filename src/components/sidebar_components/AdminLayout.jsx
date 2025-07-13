@@ -30,12 +30,14 @@ function AdminLayout(props) {
         props.formAddProductOverlay.current.classList.replace('hidden', 'flex');
     }
 
-    const { setCurrentPage } = useContext(Context);
+    const { currentPage, setCurrentPage } = useContext(Context);
+    const { openSideBar, setOpenSideBar } = useContext(Context);
     const apiUrl = useContext(Context).apiUrl;
 
     const btnLogout = useRef(null);
     const btnNavProduct = useRef(null);
     const btnNavOrder = useRef(null);
+    const aside = useRef(null);
 
     useEffect(() => {
         let fetchLogout = async () => {
@@ -56,17 +58,19 @@ function AdminLayout(props) {
         btnNavOrder.current.addEventListener('click', () => setCurrentPage('order'))
         btnNavProduct.current.addEventListener('click', () => setCurrentPage('product'))
 
-    }, [])
+        openSideBar ? aside.current.classList.replace('hidden', 'block') : aside.current.classList.replace('block', 'hidden');
+
+    }, [openSideBar])
 
 
   return (
-    <aside className='border border-gray-200 shadow-xl h-full w-64'>
+    <aside ref={aside} className='border hidden border-gray-200 shadow-xl h-full w-64'>
             <nav className='flex flex-col h-full'>
-                <button type='button' ref={btnNavProduct} className={`flex gap-2 px-4 py-2 hover:bg-gray-200 ${location.pathname === '/' ? 'bg-gray-200' : ''}`}>
+                <button type='button' ref={btnNavProduct} className={`flex gap-2 px-4 py-2 hover:bg-gray-200 ${currentPage === 'product' ? 'bg-gray-200' : ''}`}>
                     {svg.product}
                     Produk 
                 </button>
-                <button type='button' ref={btnNavOrder} className={`flex gap-2 px-4 py-2 hover:bg-gray-200 ${location.pathname === '/orders' ? 'bg-gray-200' : ''}`}>
+                <button type='button' ref={btnNavOrder} className={`flex gap-2 px-4 py-2 hover:bg-gray-200 ${currentPage === 'order' ? 'bg-gray-200' : ''}`}>
                     {svg.order}
                     Pesanan
                 </button>
@@ -81,10 +85,10 @@ function AdminLayout(props) {
             </div>
 
             <div className='self-end border-t-1 border-gray-200 flex flex-col'>
-                <a href="/profile" className='flex gap-2 px-4 py-2 hover:bg-gray-200'>
+                <button className='flex gap-2 px-4 py-2'>
                     {svg.profile}
                     {Cookies.get('username')}
-                </a>
+                </button>
                 <button ref={btnLogout} type='button' className='flex gap-2 px-4 py-2 hover:bg-gray-200'>
                     {svg.logout}
                     Keluar

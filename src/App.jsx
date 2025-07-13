@@ -17,6 +17,7 @@ function App() {
   const [SESSION_KEY, setSESSION_KEY] = useState(Cookies.get('sessionkey'));
   const [USERNAME, setUsername] = useState(Cookies.get('username'));
   const [isLoading, setIsLoading] = useState(true);
+  const [openSideBar, setOpenSideBar] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
 
     const formData = new FormData();
@@ -86,6 +87,8 @@ function App() {
         setIsAdmin,
         currentPage,
         setCurrentPage,
+        openSideBar,
+        setOpenSideBar,
         apiUrl 
       }
     }>

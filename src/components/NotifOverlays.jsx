@@ -4,13 +4,6 @@ const NotifOverlays = forwardRef((props, notifOverlay) => {
 
   const btnOk = useRef(null);
 
-  useEffect(() => {
-     btnOk.current.addEventListener('click', () => {
-       props.getUserOrders();
-      notifOverlay.current.classList.replace('flex', 'hidden');
-    })
-  })
-
   return (
     <div ref={notifOverlay} className='fixed top-0 left-0 bg-[rgba(0,0,0,0.5)] w-screen h-screen hidden justify-center pt-32 z-50'>
         <div className='p-8 rounded-lg flex flex-col gap-6 justify-center h-fit align-center bg-white'>
@@ -23,7 +16,7 @@ const NotifOverlays = forwardRef((props, notifOverlay) => {
             </span>
             <p className='text-center text-2xl font-bold'>Pesanan berhasil dibuat!</p>
 
-            <button ref={btnOk} className='bg-gray-800 hover:bg-gray-700 p-2 mt-2 rounded-sm text-white cursor-pointer'>Oke</button>
+            <button ref={btnOk} onClick={() => {notifOverlay.current.classList.replace('flex', 'hidden')}} className='bg-gray-800 hover:bg-gray-700 p-2 mt-2 rounded-sm text-white cursor-pointer'>Oke</button>
 
         </div>
     </div>
